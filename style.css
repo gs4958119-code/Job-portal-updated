@@ -1,0 +1,92 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #141e30, #243b55);
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+}
+
+.btn {
+    padding: 10px 15px;
+    background: #ff9800;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.search-section {
+    text-align: center;
+    margin: 20px;
+}
+
+.search-section input {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+}
+
+.search-section button {
+    padding: 10px;
+    border: none;
+    background: #4caf50;
+    color: white;
+    border-radius: 5px;
+}
+
+.section-title {
+    text-align: center;
+}
+
+.job-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.job-card {
+    background: white;
+    color: black;
+    width: 280px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.job-card button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border: none;
+    background: #2196f3;
+    color: white;
+    border-radius: 5px;
+}
+
+.center-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-box {
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.form-box input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="center-page" onload="loadJobDetails()">
+
+<div class="form-box">
+    <h2 id="jobTitle"></h2>
+    <p><strong>Location:</strong> <span id="jobLocation"></span></p>
+    <p><strong>Salary:</strong> <span id="jobSalary"></span></p>
+    <p><strong>Description:</strong> <span id="jobDesc"></span></p>
+
+    <hr>
+
+    <h3>Apply Now</h3>
+    <input type="text" id="appName" placeholder="Your Name">
+    <input type="email" id="appEmail" placeholder="Your Email">
+    <input type="text" id="resume" placeholder="Resume Link">
+    <button onclick="submitApplication()">Submit</button>
+
+    <br><br>
+    <a href="index.html" class="btn">Back</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
