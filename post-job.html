@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post Job</title>
+    <style>
+        body{
+            font-family: Arial; 
+            background:#f4f6f9; 
+            padding:20px;
+        }
+        .nav a, .nav button{ 
+            text-decoration:none; 
+            background:#007bff; 
+            color:white; 
+            padding:8px 15px; 
+            border-radius:5px; 
+            margin-right:10px; 
+            border:none;
+            cursor:pointer;
+        }
+        .nav a:hover, .nav button:hover{
+            background:#0056b3;
+        }
+        .container{
+            max-width:600px; 
+            margin:auto; 
+            background:white; 
+            padding:20px; 
+            border-radius:8px; 
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+        input, textarea{
+            width:100%; 
+            padding:10px; 
+            margin:8px 0; 
+            border:1px solid #ccc; 
+            border-radius:5px;
+        }
+        button.post-btn{
+            width:100%; 
+            padding:10px; 
+            background:#28a745; 
+            color:white; 
+            border:none; 
+            border-radius:5px; 
+            cursor:pointer;
+            margin-top:10px;
+        }
+        button.post-btn:hover{
+            background:#1e7e34;
+        }
+        .success{
+            text-align:center; 
+            color:green; 
+            margin-top:10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <a href="index.html">🏠 Home</a>
+    <button onclick="window.location.href='my-posted-jobs.html'">📄 See My Posted Jobs</button>
+</div>
+
+<div class="container">
+    <h2>Post a Job</h2>
+
+    <input type="text" id="title" placeholder="Job Title" required>
+    <input type="text" id="company" placeholder="Company Name" required>
+    <input type="text" id="location" placeholder="Location" required>
+    <input type="text" id="salary" placeholder="Salary (e.g., 8 LPA)" required>
+    <textarea id="description" placeholder="Job Description"></textarea>
+
+    <button class="post-btn" onclick="postJob()">Post Job</button>
+
+    <div class="success" id="successMsg"></div>
+</div>
+
+<script>
+function postJob(){
+    let title = document.getElementById("title").value.trim();
+    let company = document.getElementById("company").value.trim();
+    let location = document.getElementById("location").value.trim();
+    let salary = document.getElementById("salary").value.trim();
+    let description = document.getElementById("description").value.trim();
+
+    if(!title || !company || !location || !salary){
+        alert("Please fill all required fields");
+        return;
+    }
+
+    // Get jobs from localStorage
+    let jobs = JSON.parse(localStorage.getItem("postedJobs")) || [];
+
+    // Create new job object
+    let newJob = {
+        id: Date.now(),
+        title,
+        company,
+        location,
+        salary,
+        description
+    };
+
+    // Add job and save back to localStorage
+    jobs.push(newJob);
+    localStorage.setItem("postedJobs", JSON.stringify(jobs));
+
+    // Show success message
+    document.getElementById("successMsg").innerText = "✅ Job Posted Successfully!";
+
+    // Clear input fields
+    document.querySelectorAll("input, textarea").forEach(el => el.value="");
+}
+</script>
+
+</body>
+</html>

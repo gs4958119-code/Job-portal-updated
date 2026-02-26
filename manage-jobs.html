@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Jobs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            background: linear-gradient(90deg, #007bff, #00bfff);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            background: #28a745;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            background: #1e7e34;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .job-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .job-card {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .job-card h2 {
+            margin: 0 0 5px 0;
+        }
+
+        .job-card button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+
+        .job-card button:hover {
+            background-color: #1e7e34;
+        }
+
+        .search-box {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .search-box input {
+            padding: 8px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .back-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Apply Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-content button:hover {
+            background: #1e7e34;
+        }
+
+        .close {
+            color: red;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <h2>Job Portal</h2>
+    <a href="applications.html">My Applied Jobs</a>
+</div>
+
+<h1>Available Jobs 💼</h1>
+
+<div class="search-box">
+    <input type="text" id="searchInput" 
+           placeholder="Search by title, company, location..." 
+           onkeyup="searchJobs()">
+</div>
+
+<div id="jobList" class="job-container"></div>
+
+<button class="back-btn" onclick="goHome()">🏠 Back Home</button>
+
+<!-- Apply Modal -->
+<div id="applyModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Apply for Job</h2>
+        <input type="text" id="appName" placeholder="Full Name" required>
+        <input type="email" id="appEmail" placeholder="Email" required>
+        <input type="url" id="appResume" placeholder="Resume Link (PDF/Drive)">
+        <input type="text" id="appDegree" placeholder="Degree / Qualification">
+        <textarea id="appMessage" placeholder="Additional Message"></textarea>
+        <button onclick="submitApplication()">Submit Application</button>
+    </div>
+</div>
+
+<script>
+let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+let selectedJobId = null;
+
+function displayJobs(jobArray = jobs) {
+    const container = document.getElementById("jobList");
+    container.innerHTML = "";
+
+    if (jobArray.length === 0) {
+        container.innerHTML = "<h3 style='text-align:center;'>No jobs found ❌</h3>";
+        return;
+    }
+
+    jobArray.slice(0,100).forEach((job) => {
+        container.innerHTML += `
+            <div class="job-card">
+                <h2>${job.title}</h2>
+                <p><strong>Company:</strong> ${job.company || "Tech Corp Pvt Ltd"}</p>
+                <p><strong>Location:</strong> ${job.location}</p>
+                <p><strong>Salary:</strong> ${job.salary}</p>
+                <p><strong>Description:</strong> ${job.description}</p>
+                <button onclick="openApplyModal(${job.id})">Apply</button>
+            </div>
+        `;
+    });
+}
+
+function searchJobs() {
+    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+    let filteredJobs = jobs.filter(job => 
+        job.title.toLowerCase().includes(searchValue) ||
+        (job.company && job.company.toLowerCase().includes(searchValue)) ||
+        job.location.toLowerCase().includes(searchValue)
+    );
+    displayJobs(filteredJobs);
+}
+
+function openApplyModal(jobId){
+    selectedJobId = jobId;
+    document.getElementById("applyModal").style.display = "block";
+}
+
+function closeModal(){
+    document.getElementById("applyModal").style.display = "none";
+    selectedJobId = null;
+    document.getElementById("appName").value = "";
+    document.getElementById("appEmail").value = "";
+    document.getElementById("appResume").value = "";
+    document.getElementById("appDegree").value = "";
+    document.getElementById("appMessage").value = "";
+}
+
+function submitApplication(){
+    const name = document.getElementById("appName").value.trim();
+    const email = document.getElementById("appEmail").value.trim();
+    const resume = document.getElementById("appResume").value.trim();
+    const degree = document.getElementById("appDegree").value.trim();
+    const message = document.getElementById("appMessage").value.trim();
+
+    if(!name || !email){
+        alert("Please enter Name and Email ❌");
+        return;
+    }
+
+    let applications = JSON.parse(localStorage.getItem("applications")) || [];
+    let job = jobs.find(j => j.id === selectedJobId);
+    if(!job) { alert("Job not found ❌"); return; }
+
+    applications.push({
+        jobId: job.id,
+        jobTitle: job.title,
+        company: job.company || "Tech Corp Pvt Ltd",
+        name,
+        email,
+        resume,
+        degree,
+        message
+    });
+
+    localStorage.setItem("applications", JSON.stringify(applications));
+    alert("Application Submitted ✅");
+    closeModal();
+}
+
+function goHome() {
+    window.location.href = "index.html";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    displayJobs();
+});
+</script>
+
+</body>
+</html>
